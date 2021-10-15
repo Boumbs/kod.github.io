@@ -1,0 +1,773 @@
+#include <IRremote.h>
+int pin = 10;
+IRrecv IR(pin);
+decode_results cmd;
+String myCom;
+
+int redPin = 9;
+int greenPin = 5;
+int bluePin = 6;
+int red;
+int green;
+int blue;
+int lSpeed = 8;
+int funcNum = 0;
+int exitNum = 0;
+int lightVal = 15;
+float dFact = 1;
+
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  IR.enableIRIn();
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  while (IR.decode(&cmd) == 0) {
+
+  }
+  delay(300);
+  IR.resume();
+  if (cmd.value == 0xFFA25D) {
+    myCom = "Power";
+    Serial.println(myCom);
+  }
+  if (cmd.value == 0xFF02FD) {
+    myCom = "play";
+    Serial.println(myCom);
+  }
+  if (cmd.value == 0xFF30CF) {
+    myCom = "one";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF18E7) {
+    myCom = "two";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF7A85) {
+    myCom = "three";
+    Serial.println(myCom);
+  }
+  if (myCom == "one") {
+    funcNum = 1;
+    
+  }
+  if (myCom == "two") {
+    funcNum = 2;
+  }
+  if (myCom == "three") {
+    funcNum = 3;
+  }
+  if (myCom == "play") {
+    funcNum = funcNum + 1;
+    if (funcNum > 3) {
+      funcNum = 0;
+    }
+    Serial.println(funcNum);
+  }
+  if (myCom == "power") {
+    funcNum = 0;
+    analogWrite(redPin, 0);
+    analogWrite(greenPin, 0);
+    analogWrite(bluePin, 0);
+    Serial.println(funcNum);
+  }
+
+  while (funcNum == 1) {
+    boolean r = function1();
+    if (r == false) {
+      analogWrite(redPin, 0);
+      analogWrite(greenPin, 0);
+      analogWrite(bluePin, 0);
+      break;
+    }
+  }
+  while (funcNum == 2) {
+    boolean r = function2();
+    if (r == false) {
+      analogWrite(redPin, 0);
+      analogWrite(greenPin, 0);
+      analogWrite(bluePin, 0);
+      break;
+    }
+  }
+  while (funcNum == 3) {
+    boolean r = function3();
+    if (r == false) {
+      analogWrite(redPin, 0);
+      analogWrite(greenPin, 0);
+      analogWrite(bluePin, 0);
+      break;
+    }
+  }
+}
+
+// here are the functions:
+
+boolean function1() {     // alap gombnyomós program
+  while (IR.decode(&cmd) == 0) {
+
+  }
+  delay(300);
+  IR.resume();
+  if (cmd.value == 0xFF6897) {
+    myCom = "zero";
+    Serial.println(myCom);
+  }
+  if (cmd.value == 0xFFA25D) {
+    myCom = "Power";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF30CF) {
+    myCom = "one";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF18E7) {
+    myCom = "two";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF7A85) {
+    myCom = "three";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF10EF) {
+    myCom = "four";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF38C7) {
+    myCom = "five";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF5AA5) {
+    myCom = "six";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF42BD) {
+    myCom = "seven";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF4AB5) {
+    myCom = "eight";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF52AD) {
+    myCom = "nine";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF629D) {
+    myCom = "Vol+";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFFE21D) {
+    myCom = "function";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF22DD) {
+    myCom = "rewind";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF02FD) {
+    myCom = "play";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFFC23D) {
+    myCom = "forward";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFFE01F) {
+    myCom = "down";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFFA857) {
+    myCom = "Vol-";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF906F) {
+    myCom = "up";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFF9867) {
+    myCom = "EQ";
+    Serial.println(myCom);
+  }
+
+  if (cmd.value == 0xFFB04F) {
+    myCom = "repeat";
+    Serial.println(myCom);
+  }
+
+  if (myCom == "play") {
+    funcNum = funcNum + 1;
+    if (funcNum > 3) {
+      funcNum = 0;
+    }
+    Serial.println(funcNum);
+    return false;
+
+  }
+  if (myCom == "Power") {
+    funcNum = 0;
+    analogWrite(redPin, 0);
+    analogWrite(greenPin, 0);
+    analogWrite(bluePin, 0);
+    Serial.println(funcNum);
+    return false;
+
+  }
+
+  if (myCom == "zero") {
+    red = 255;
+    green = 255;
+    blue = 255;
+  }
+
+  if (myCom == "one") {
+    red = 255;
+    green = 0;
+    blue = 0;
+  }
+
+  if (myCom == "two") {
+    red = 0;
+    green = 255;
+    blue = 0;
+  }
+
+  if (myCom == "three") {
+    red = 0;
+    green = 0;
+    blue = 255;
+  }
+
+  if (myCom == "four") {
+    red = 0;
+    green = 255;
+    blue = 255;
+  }
+
+  if (myCom == "five") {
+    red = 255;
+    green = 0;
+    blue = 255;
+  }
+
+  if (myCom == "six") {
+    red = 255;
+    green = 255;
+    blue = 0;
+  }
+  if (myCom == "seven") {
+    red = 52;
+    green = 191;
+    blue = 202;
+  }
+  if (myCom == "eight") {
+    red = 191;
+    green = 255;
+    blue = 0;
+  }
+  if (myCom == "nine") {
+    red = 153;
+    green = 0;
+    blue = 255;
+  }
+  if (myCom == "up") {
+    blue = blue + lightVal;
+    if (blue > 255) {
+      blue = 255;
+    }
+  }
+  if (myCom == "down") {
+    blue = blue - lightVal;
+    if (blue < 0) {
+      blue = 0;
+    }
+  }
+  if (myCom == "rewind") {
+    green = green - lightVal;
+    if (green < 0) {
+      green = 0;
+    }
+  }
+  if (myCom == "forward") {
+    green = green + lightVal;
+    if (green > 255) {
+      green = 255;
+    }
+  }
+  if (myCom == "Vol-") {
+    red = red - lightVal;
+    if (red < 0) {
+      red = 0;
+    }
+  }
+  if (myCom == "Vol+") {
+    red = red + lightVal;
+    if (red > 255) {
+      red = 255;
+    }
+  }
+
+  if (myCom == "EQ") {
+    dFact = dFact * 0.8;
+  }
+
+  if (myCom == "repeat") {
+    dFact = dFact * 1.25;
+    if (dFact > 1) {
+      dFact = 1;
+    }
+
+  }
+
+
+
+  analogWrite(redPin, red * dFact);
+  analogWrite(greenPin, green * dFact);
+  analogWrite(bluePin, blue * dFact);
+
+  Serial.print(red * dFact);
+  Serial.print(" , ");
+  Serial.print(green * dFact);
+  Serial.print(" , ");
+  Serial.println(blue * dFact);
+  return true;
+}
+
+boolean function3() {    //folyamatosan világít és színt vált
+  red = 255;
+  blue = 255;
+  green = 0;
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    red = red - lSpeed;
+    if (red < 0) {
+      red = 0;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    green = green + lSpeed;
+    if (green > 255) {
+      green = 255;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    blue = blue - lSpeed;
+    if (blue < 0) {
+      blue = 0;
+    }
+
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    red = red + lSpeed;
+    if (red > 255) {
+      red = 255;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    green = green - lSpeed;
+    if (green < 0) {
+      green = 0;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    blue = blue + lSpeed;
+    if (blue > 255) {
+      blue = 255;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+  return true;
+}
+//void functionNew() {               //Ez a következő program lenne asszem
+//  red=255;
+//  blue=255;
+//  green=0;
+//for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+//    red = red - lSpeed;
+//    green = green + lSpeed;
+//    if (red<0) {
+//      red = 0;
+//    }
+//    if (green > 255) {
+//      green = 255;
+//    }
+//    analogWrite(redPin, red);
+//    analogWrite(greenPin, green);
+//    analogWrite(bluePin, blue);
+//    delay(50);
+//  }
+//for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+//    red = red + lSpeed;
+//    blue = blue - lSpeed;
+//    if (blue<0) {
+//      blue = 0;
+//    }
+//    if (red > 255) {
+//      red = 255;
+//    }
+//    analogWrite(redPin, red);
+//    analogWrite(greenPin, green);
+//    analogWrite(bluePin, blue);
+//    delay(50);
+//  }
+//  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+//    green = green - lSpeed;
+//    blue = blue + lSpeed;
+//    if (green<0) {
+//      green = 0;
+//    }
+//    if (blue > 255) {
+//      blue = 255;
+//    }
+//    analogWrite(redPin, red);
+//    analogWrite(greenPin, green);
+//    analogWrite(bluePin, blue);
+//    delay(50);
+//  }
+//}
+
+
+void buttonLED2() {   //a gomb programja
+  if (IR.decode(&cmd) != 0) {
+    delay(300);
+    IR.resume();
+    if (cmd.value == 0xFFA25D) {
+      myCom = "Power";
+      Serial.println(myCom);
+    }
+
+    if (cmd.value == 0xFF629D) {
+      myCom = "Vol+";
+      Serial.println(myCom);
+    }
+
+
+    if (cmd.value == 0xFF02FD) {
+      myCom = "play";
+      Serial.println(myCom);
+    }
+
+
+    if (cmd.value == 0xFFA857) {
+      myCom = "Vol-";
+      Serial.println(myCom);
+    }
+
+    if (myCom == "Vol+") {
+      lSpeed = lSpeed + 1;
+    }
+    if (myCom == "Vol-") {
+      lSpeed = lSpeed - 1;
+      if (lSpeed < 1) {
+        lSpeed = 1;
+      }
+    }
+    if (myCom == "play") {
+      funcNum = funcNum + 1;
+      if (funcNum > 3) {
+        funcNum = 0;
+      }
+      Serial.println(funcNum);
+      exitNum = 1;
+    }
+    if (myCom == "Power") {
+      funcNum = 0;
+      analogWrite(redPin, 0);
+      analogWrite(greenPin, 0);
+      analogWrite(bluePin, 0);
+      Serial.println(funcNum);
+      exitNum = 1;
+    }
+  }
+}
+
+boolean function2() {    //villogtat majd elhalványít
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    red = red + lSpeed;
+    if (red > 255) {
+      red = 255;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    red = red - lSpeed;
+    if (red < 0) {
+      red = 0;
+    }
+
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    green = green + lSpeed;
+    if (green > 255) {
+      green = 255;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    green = green - lSpeed;
+    if (green < 0) {
+      green = 0;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    blue = blue + lSpeed;
+    if (blue > 255) {
+      blue = 255;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    blue = blue - lSpeed;
+    if (blue < 0) {
+      blue = 0;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    green = green + lSpeed;
+    blue = blue + lSpeed;
+    if (green > 255) {
+      green = 255;
+    }
+    if (blue > 255) {
+      blue = 255;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    green = green - lSpeed;
+    blue = blue - lSpeed;
+    if (green < 0) {
+      green = 0;
+    }
+    if (blue < 0) {
+      blue = 0;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    green = green + lSpeed;
+    red = red + lSpeed;
+    if (green > 255) {
+      green = 255;
+    }
+    if (red > 255) {
+      red = 255;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    green = green - lSpeed;
+    red = red - lSpeed;
+    if (green < 0) {
+      green = 0;
+    }
+    if (red < 0) {
+      red = 0;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    red = red + lSpeed;
+    blue = blue + lSpeed;
+    if (red > 255) {
+      red = 255;
+    }
+    if (blue > 255) {
+      blue = 255;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+
+  buttonLED2();
+  if (exitNum == 1) {
+    exitNum = 0;
+    return false;
+  }
+  for (int i = 0; i < round(255 / lSpeed + 1); i = i + 1) {
+    red = red - lSpeed;
+    blue = blue - lSpeed;
+    if (red < 0) {
+      red = 0;
+    }
+    if (blue < 0) {
+      blue = 0;
+    }
+    analogWrite(redPin, red);
+    analogWrite(greenPin, green);
+    analogWrite(bluePin, blue);
+    delay(50);
+  }
+  return true;
+}
